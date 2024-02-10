@@ -1,8 +1,21 @@
 import { Suspense } from 'react';
-import MovieInfo from '../../../../components/movie-info';
+import MovieInfo, { getMovie } from '../../../../components/movie-info';
 import MovieVideos from '../../../../components/movie-viedos';
 
-export default async function MovieDetail({ params: { id } }) {
+interface IParams {
+  params: {
+    id: string;
+  };
+}
+export async function generateMetadata({ params: { id } }: IParams) {
+  const movie = await getMovie(id);
+  // 이전 NextJS였으면 안좋은 방법일 수 있었으나, 현재 NextJS는 캐싱을 지원하기 때문에 같은 정보를 여러번 fetch해도 무방하다.
+  return {
+    title: movie.title,
+  };
+}
+
+export default async function MovieDetail({ params: { id } }: IParams) {
   return (
     <div>
       <h3>Movie Detail Page</h3>
